@@ -8,7 +8,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'change-payment', payment): void,
-    (e: 'close-add-payment'): void
+    (e: 'close-edit-form'): void
 }>();
 
 const inputName = ref<string>(props.payment.name);
@@ -24,7 +24,7 @@ function editPayment() {
 
 
 <template>
-  <div class="w-1/5 bg-slate-900 rounded-xl p-6 text-slate-200 flex flex-col items-center gap-5">
+  <div class="2xl:w-1/5 w-11/12 bg-slate-900 rounded-xl p-6 text-slate-200 flex flex-col items-center gap-5">
     <span class="text-xl">Add new payment</span>
     <div class="flex flex-col gap-3 w-full">
       <label for="name">Name</label>
@@ -60,7 +60,7 @@ function editPayment() {
     </div>
     <div class="flex justify-between w-full items-center">
       <span
-        @click="emit('close-add-payment')"
+        @click="emit('close-edit-form')"
         class="cursor-pointer px-2 py-1 rounded-lg text-red-700 border border-red-700 hover:bg-red-800 hover:text-slate-200 transition-all duration-300"
       > Cancel </span>
       <span

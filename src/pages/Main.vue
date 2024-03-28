@@ -56,8 +56,8 @@ onMounted(() => getPayments());
 
 <template>
   <div
-    :class="paymentToDelete || openAddPayment ? 'opacity-10' : ''"
-    class="w-full h-full flex flex-col items-center p-20 gap-20"
+    :class="paymentToDelete || openAddPayment || openEditForm ? 'opacity-10' : ''"
+    class="w-full h-full flex flex-col items-center xl:p-20 p-4 xl:gap-20 gap-8"
   >
     <span class="text-5xl text-slate-200 font-bold">List :)</span>
     <div class="flex flex-col gap-5 w-full h-full items-center">

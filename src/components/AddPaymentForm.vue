@@ -22,7 +22,7 @@ function addPayment() {
 </script>
 
 <template>
-  <div class="w-1/5 bg-slate-900 rounded-xl p-6 text-slate-200 flex flex-col items-center gap-5">
+  <div class="2xl:w-1/5 w-11/12 bg-slate-900 rounded-xl p-6 text-slate-200 flex flex-col items-center gap-5">
     <span class="text-xl">Add new payment</span>
     <div class="flex flex-col gap-3 w-full">
       <label for="name">Name</label>
