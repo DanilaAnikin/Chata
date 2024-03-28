@@ -4,6 +4,7 @@ import PaymentFooter from '../components/PaymentFooter.vue';
 import Payment from '../components/Payment.vue';
 import DeleteForm from '../components/DeleteForm.vue';
 import AddPaymentForm from '../components/AddPaymentForm.vue';
+import EditForm from '../components/EditForm.vue';
 import { supabase } from '../supabase.js';
 import { PaymentTypeFull } from '../types';
 import { ref, onMounted } from 'vue';
@@ -31,10 +32,24 @@ async function deletePayment() {
   openDeleteForm.value = false;
 }
 
+async function changePayment(payment: PaymentTypeFull) {
+  const paymentIndex = payments.value!.findIndex((pmnt) => pmnt.id == openEditPayment.value!.id);
+  // @ts-ignore
+  payments.value![paymentIndex] = { id: openEditPayment.value!.id , ...payment };
+  
+  const { error } = await supabase.from('payments').update({ name: payment.name, amount: payment.amount, description: payment.description, currency: payment.currency }).eq('id', openEditPayment.value!.id);
+
+  openEditForm.value = false;
+  openEditPayment.value = null;
+}
+
 const openDeleteForm = ref<boolean>(false);
 const paymentToDelete = ref<PaymentTypeFull | null>();
 
 const openAddPayment = ref<boolean>(false);
+
+const openEditForm = ref<boolean>(false);
+const openEditPayment = ref<PaymentTypeFull | null>();
 
 onMounted(() => getPayments());
 </script>
@@ -52,6 +67,7 @@ onMounted(() => getPayments());
         class="h-full"
         v-for="payment in payments"
         @change-delete-form="openDeleteForm=!openDeleteForm; paymentToDelete=$event"
+        @show-payment="openEditForm=!openEditForm, openEditPayment=$event"
         :payment="payment"
         :openDeleteForm="openDeleteForm"
       />
@@ -71,6 +87,14 @@ onMounted(() => getPayments());
       v-if="openAddPayment"
       @close-add-payment="openAddPayment=false"
       @add-payment="addPayment($event)"
+    />
+  </div>
+  <div class="w-full flex justify-center absolute top-40">
+    <EditForm
+      v-if="openEditForm"
+      @close-edit-form="openEditForm=false"
+      @change-payment="changePayment($event)"
+      :payment="openEditPayment!"
     />
   </div>
 </template>

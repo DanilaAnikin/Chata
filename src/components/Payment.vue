@@ -11,7 +11,7 @@ withDefaults(defineProps<{
 
 const emit = defineEmits<{
   (e: 'change-delete-form', payment: PaymentTypeFull): void,
-  (e: 'show-payment'): void,
+  (e: 'show-payment', payment: PaymentTypeFull): void,
 }>();
 </script>
 
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 
     <div class="flex gap-2 w-[5%]">
       <PencilSquareIcon
-        @click="emit('show-payment')"
+        @click="emit('show-payment', payment!)"
         class="w-5 h-5 cursor-pointer hover:text-blue-800 transition-all duration-300"
       />
       <TrashIcon
