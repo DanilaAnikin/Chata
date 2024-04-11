@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AddPayment from '../components/AddPayment.vue';
+import TopFooter from '../components/TopFooter.vue';
 import PaymentFooter from '../components/PaymentFooter.vue';
 import Payment from '../components/Payment.vue';
 import DeleteForm from '../components/DeleteForm.vue';
@@ -43,6 +43,20 @@ async function changePayment(payment: PaymentTypeFull) {
   openEditPayment.value = null;
 }
 
+const calculatedData = ref({});
+
+async function calculatePayments(paymentList: PaymentTypeFull[]) {
+  for (let i=0; i<paymentList.length; i++) {
+    const name = payments.value![i].name;
+    const { data, error } = await supabase.from('payments').select().eq('name', name);
+    console.log(data);
+    for (let j=0; j<data!.length; j++) {
+      calculatedData.value = Object.assign({ name: data![j].value_of_money }, calculatedData.value);
+    }
+  }
+  console.log(calculatedData.value);
+}
+
 const openDeleteForm = ref<boolean>(false);
 const paymentToDelete = ref<PaymentTypeFull | null>();
 
@@ -51,17 +65,23 @@ const openAddPayment = ref<boolean>(false);
 const openEditForm = ref<boolean>(false);
 const openEditPayment = ref<PaymentTypeFull | null>();
 
+const openCalculateForm = ref<boolean>(false);
+
 onMounted(() => getPayments());
 </script>
 
 <template>
   <div
-    :class="paymentToDelete || openAddPayment || openEditForm ? 'opacity-10' : ''"
+    :class="paymentToDelete || openAddPayment || openEditForm || openCalculateForm ? 'opacity-10' : ''"
     class="w-full h-full flex flex-col items-center xl:p-20 p-4 xl:gap-20 gap-8"
   >
     <span class="text-5xl text-slate-200 font-bold">List :)</span>
     <div class="flex flex-col gap-5 w-full h-full items-center">
-      <AddPayment @open-add-payment="openAddPayment=!openAddPayment" />
+      <TopFooter
+        @open-add-payment="openAddPayment=!openAddPayment"
+        @open-calculate-form="openCalculateForm!=openCalculateForm"
+        @click="calculatePayments(payments!)"
+        />
       <PaymentFooter v-if="payments" />
       <Payment
         class="h-full"
@@ -87,6 +107,13 @@ onMounted(() => getPayments());
       v-if="openAddPayment"
       @close-add-payment="openAddPayment=false"
       @add-payment="addPayment($event)"
+    />
+  </div>
+  <div class="w-full flex justify-center absolute top-40">
+    <CalculatePaymentForm
+      v-if="openCalculateForm"
+      @close-calculate-form="openCalculateForm=false"
+      @calculate="calculatePayments(payments!)"
     />
   </div>
   <div class="w-full flex justify-center absolute top-40">
